@@ -120,5 +120,17 @@
 
 body {
   font-family: "Outfit", sans-serif;
-  background-color: #f9fafb;
+  /* background-color: #f9fafb; */
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip: rect(0px, 0px, 0px, 0px);
+  padding: 0px;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-width: 0px;
 }

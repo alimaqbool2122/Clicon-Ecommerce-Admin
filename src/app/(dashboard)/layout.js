@@ -11,7 +11,7 @@ function DashboardLayout({ children }) {
         <SidebarInset>
           <div>
             <DashboardHeader />
-            <main className="bg-[#f9fafb] w-full h-screen p-6">{children}</main>
+            <main className="bg-[#f9fafb] p-6">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>

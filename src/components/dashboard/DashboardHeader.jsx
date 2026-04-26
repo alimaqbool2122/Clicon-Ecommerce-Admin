@@ -40,12 +40,12 @@ const DashboardHeader = () => {
     {
       icon: <EditProfileIcon />,
       label: "Edit profile",
-      href: ROUTES.PROFILE(1),
+      href: "#",
     },
     {
       icon: <AccountSettingsIcon />,
       label: "Account Settings",
-      href: ROUTES.PROFILE_SETTINGS,
+      href: "#",
     },
     {
       icon: <InfoIcon />,
@@ -55,19 +55,19 @@ const DashboardHeader = () => {
   ];
   return (
     <>
-      <div className="sticky top-0 z-9999 flex items-center justify-between px-6 py-4 bg-white border-b border-[#e4e7ec]">
+      <div className="sticky top-0 z-999 flex items-center justify-between px-6 py-4 bg-white border-b border-[#e4e7ec]">
         {/* search & menu bar */}
         <div className="flex items-center gap-4">
           {/* menuopen & close */}
           <div>
-            <button 
+            <button
               onClick={toggleSidebar}
               className="grid place-content-center text-[#667085] border border-[#e4e7ec] w-11 h-11 rounded-[8px] cursor-pointer"
             >
               <MenubarIcon />
             </button>
           </div>
-          <div className="relative">
+          <div className="relative hidden xl:block">
             <button className="absolute top-1/2 left-4 -translate-y-1/2 cursor-pointer">
               <SearchIcon />
             </button>

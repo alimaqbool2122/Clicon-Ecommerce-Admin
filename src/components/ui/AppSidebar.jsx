@@ -1,23 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useSidebar } from "@/components/ui/sidebar";
 import {
-  AccountSettingsIcon,
-  BrowingHistoryIcon,
-  CardsAndAddressIcon,
-  ChatIcon,
-  CompareIcon,
+  ArrowDown,
   DashboardIcon,
-  EditProfileIcon,
+  FileIcon,
   LogoutIcon,
   OrderIcon,
   ShopingCartIcon,
-  TruckTrackingIcon,
-  WishlistIcon,
 } from "../svg/Icons";
 import ROUTES from "@/constants/routes";
 
@@ -27,46 +21,32 @@ const AppSidebar = () => {
   const isMobileOpen = openMobile;
   const setIsMobileOpen = setOpenMobile;
   const pathname = usePathname();
-
+  const [openDropdown, setOpenDropdown] = useState("");
+  const dropdownRef = useRef(null);
   const routes = [
     { icon: <DashboardIcon />, label: "Dashboard", href: ROUTES.DASHBOARD },
-    { icon: <OrderIcon />, label: "Order History", href: ROUTES.ORDER_HISTORY },
     {
-      icon: <TruckTrackingIcon />,
-      label: "Track Order",
-      href: ROUTES.TRACK_ORDER,
+      icon: <FileIcon />,
+      label: "Banner",
+      href: "#",
+      subRoutes: [
+        { label: "All Banners", href: ROUTES.BANNER_LIST },
+        { label: "Create Banner", href: ROUTES.ADD_BANNER },
+      ],
     },
     {
       icon: <ShopingCartIcon />,
-      label: "Shopping Cart",
-      href: ROUTES.SHOPING_CARD,
-    },
-    { icon: <WishlistIcon />, label: "wishlist", href: ROUTES.WISHLIST },
-    { icon: <CompareIcon />, label: "Compare", href: ROUTES.COMPARE },
-    {
-      icon: <CardsAndAddressIcon />,
-      label: "Cards & Address",
-      href: ROUTES.CARDS_ADDRESS,
-    },
-    {
-      icon: <BrowingHistoryIcon />,
-      label: "Browsing History",
-      href: ROUTES.BROWSING_HISTORY,
-    },
-    {
-      icon: <ChatIcon />,
-      label: "Chat",
+      label: "Product",
       href: "#",
+      subRoutes: [
+        { label: "All Products", href: ROUTES.PRODUCTS_LIST },
+        { label: "Create Product", href: ROUTES.ADD_PRODUCT },
+      ],
     },
     {
-      icon: <EditProfileIcon />,
-      label: "Edit profile",
-      href: ROUTES.PROFILE(1),
-    },
-    {
-      icon: <AccountSettingsIcon />,
-      label: "Account Settings",
-      href: ROUTES.PROFILE_SETTINGS,
+      icon: <OrderIcon />,
+      label: "Add Category",
+      href: ROUTES.ADD_CATEGORY,
     },
     {
       icon: <LogoutIcon />,
@@ -74,6 +54,29 @@ const AppSidebar = () => {
       href: "#",
     },
   ];
+
+  useEffect(() => {
+    if (pathname === ROUTES.PRODUCTS_LIST || pathname === ROUTES.ADD_PRODUCT) {
+      setOpenDropdown("Product");
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownClick = (label) => {
+    setOpenDropdown((prev) => (prev === label ? "" : label));
+  };
 
   return (
     <>
@@ -106,7 +109,7 @@ const AppSidebar = () => {
               alt="Logo"
               width={154}
               height={32}
-              className={`absolute top-0 transition-all duration-500 ease-in-out ${
+              className={`absolute top-0 transition-all duration-500 ease-in-out cursor-pointer ${
                 isCollapsed
                   ? "opacity-0 scale-95 pointer-events-none"
                   : "opacity-100 scale-100"
@@ -117,7 +120,7 @@ const AppSidebar = () => {
               alt="Logo Icon"
               width={32}
               height={32}
-              className={`absolute top-0 transition-all duration-500 ease-in-out ${
+              className={`absolute top-0 transition-all duration-500 ease-in-out cursor-pointer ${
                 isCollapsed
                   ? "opacity-100 scale-100 left-[9px]"
                   : "opacity-0 scale-95 left-0 pointer-events-none"
@@ -138,7 +141,94 @@ const AppSidebar = () => {
           {/* routes list */}
           <ul className="space-y-1">
             {routes.map((route, index) => {
-              const isActive = pathname === route.href;
+              const hasSubRoutes = !!route.subRoutes;
+              const isActive = hasSubRoutes
+                ? route.subRoutes.some((sub) => pathname === sub.href)
+                : pathname === route.href;
+
+              if (hasSubRoutes) {
+                const isDropdownOpen = openDropdown === route.label;
+                return (
+                  <li key={index} ref={isDropdownOpen ? dropdownRef : null}>
+                    <div
+                      onClick={() => handleDropdownClick(route.label)}
+                      className={`relative w-full block rounded-[8px] transition duration-500 ease-in-out cursor-pointer ${
+                        isActive
+                          ? "text-white"
+                          : "text-[#667085] bg-white hover:bg-gray-100 hover:text-[#344054]"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="active-sidebar"
+                          className="absolute inset-0 bg-[#FA8232] rounded-[8px]"
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+                      <div className="relative z-10 flex items-center justify-between text-sm font-medium py-2 px-3 w-full capitalize overflow-hidden">
+                        <div className="flex items-center">
+                          <div className="shrink-0 flex items-center justify-center">
+                            {route.icon}
+                          </div>
+                          <div
+                            className={`overflow-hidden transition-all duration-500 ease-in-out flex items-center ${
+                              isCollapsed
+                                ? "max-w-0 opacity-0 ml-0"
+                                : "max-w-[200px] opacity-100 ml-3"
+                            } ${isActive ? "text-white" : "text-[#344054]"}`}
+                          >
+                            <span className="whitespace-nowrap">
+                              {route.label}
+                            </span>
+                          </div>
+                        </div>
+                        {!isCollapsed && (
+                          <div
+                            className={`transition-transform duration-300 ${
+                              isDropdownOpen ? "rotate-180" : "rotate-0"
+                            } flex items-center justify-center`}
+                          >
+                            <ArrowDown />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Sub routes */}
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isDropdownOpen && !isCollapsed
+                          ? "max-h-40 opacity-100 mt-1"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <ul className="ml-9 space-y-1">
+                        {route.subRoutes.map((sub, subIdx) => {
+                          const isSubActive = pathname === sub.href;
+                          return (
+                            <li key={subIdx}>
+                              <Link
+                                href={sub.href}
+                                className={`block text-sm py-2 px-3 rounded-[8px] transition-colors ${
+                                  isSubActive
+                                    ? "text-[#FA8232] font-semibold bg-[#FA8232]/10"
+                                    : "text-[#667085] hover:text-[#344054] hover:bg-gray-100"
+                                }`}
+                              >
+                                {sub.label}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              }
 
               return (
                 <li key={index}>
