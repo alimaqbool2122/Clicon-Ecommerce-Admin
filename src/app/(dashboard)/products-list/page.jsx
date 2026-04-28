@@ -12,8 +12,35 @@ import ROUTES from "@/constants/routes";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useGetAllProductsQuery, useDeleteProductMutation } from "@/redux/services/product/productSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const { data } = useGetAllProductsQuery();
+  const [deleteProduct] = useDeleteProductMutation();
+  const router = useRouter();
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-GB", { month: "short" });
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`;
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteProduct(id).unwrap();
+      toast.success(response.message || "Product deleted successfully");
+    } catch (error) {
+      toast.error(error.data?.message || "Failed to delete product");
+    }
+  };
+
+  const handleEdit = (id) => {
+    router.push(`/create-product?id=${id}`);
+  };
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3 pb-6">
@@ -103,496 +130,86 @@ const page = () => {
             </thead>
             {/* table body */}
             <tbody className="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 shrink-0">
-                      <Image
-                        src="/image/product/product-03.jpg"
-                        alt="product"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      ASUS ROG Gaming Laptop
-                    </span>
-                  </div>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Laptop
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    ASUS
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    $2,199
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <span className="text-[12px] rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
-                    Out of Stock
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <p className="text-sm text-gray-700 dark:text-gray-400">
-                    01 Dec, 2027
-                  </p>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <EditIcon />
-                    <DeleteIcon />
-                    <EyeIcon />
-                  </div>
-                </td>
-              </tr>
+              {data?.data?.length > 0 ? (
+                data.data.map((product) => (
+                  <tr key={product._id}>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-12 w-12 shrink-0">
+                          <Image
+                            src={product.mainImage}
+                            alt={product.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                          {product.title}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {product.category}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <p className="text-sm text-gray-700 dark:text-gray-400">
+                        {product.brand}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <p className="text-sm text-gray-700 dark:text-gray-400">
+                        ${product.price}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span
+                        className={`text-[12px] rounded-full px-2 py-0.5 font-medium ${
+                          product.stock > 0
+                            ? "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-500"
+                            : "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-500"
+                        }`}
+                      >
+                        {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <p className="text-sm text-gray-700 dark:text-gray-400">
+                        {formatDate(product.createdAt)}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-3 ">
+                        <button 
+                          onClick={() => handleEdit(product._id)}
+                          className="text-gray-700 duration-300 ease-linear hover:text-[#fa8232] cursor-pointer"
+                        >
+                          <EditIcon />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(product._id)}
+                          className="text-gray-700 duration-300 ease-linear hover:text-red-500 cursor-pointer"
+                        >
+                          <DeleteIcon />
+                        </button>
+                        <button className="text-gray-700 duration-300 ease-linear hover:text-[#fa8232] cursor-pointer">
+                          <EyeIcon />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={12}
+                    className="px-5 py-6 text-center text-sm text-gray-500"
+                  >
+                    No products found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
